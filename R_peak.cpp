@@ -6,9 +6,9 @@ double sort(double*in,int begin,int end);
 
 void Widget::R_peak (double *wave,double *RRI_a,double *rR_peak ){
 double RRI[150];
-double slope,max,RRI_t,sum_RRI,minRRI=0.5,maxRRI=1,dx,dy,r_m;
+double slope,max,RRI_t,sum_RRI,minRRI=0.6,maxRRI=0.95,dx,dy,r_m;
 int i,det,ii;
-int range=50,k1,RRI_rcont,ei;
+int range=40,k1,RRI_rcont,ei;
 int R_peak[150];
 
     memset(R_peak, 0, 150*sizeof(int));
@@ -62,7 +62,7 @@ k1=0;
         //printf("%d %4f  \n",i,RRI[i]);
     }
 
-    //RRI_mean = sum_RRI/(k1-1);
+    RRI_mean = sum_RRI/(k1-1);
 
     //sum_RRI=0;
 
@@ -125,9 +125,9 @@ k1=0;
         //printf("i= %d %4f  \n",i+1,rR_peak[i+1]);
     }
     RRI_mean = rR_peak[i]/(len_RRI_a);
-
+    //printf(" RRI_mean= %d  \n", len_RRI_a);
     HR = 60/RRI_mean;
-    //printf(" RRI_mean= %f HR%d  \n", RRI_mean,HR);
+
 
 }
 

@@ -84,11 +84,10 @@ void Widget::PSD (double*yi,int lent,double time,double*f,double*pow){
    }
    FFT(x,y,nfft,1);
    L=lent;
-
    for(i=0; i<nfft/2; i++)
    {
    pow[i] =(x[i]*x[i]+y[i]*y[i])/(L*L)*1000;
-   //printf("%d %f %f %f\n",i,x[i],y[i],pow[i]);
+   printf("%d %f %f %f\n",i,x[i],y[i],pow[i]);
    }
 
    //printf("%d \n",haN);
@@ -140,156 +139,10 @@ void Widget::PSD (double*yi,int lent,double time,double*f,double*pow){
    TP=VLF+LF+HF;
 
      //printf("f_VLF=%d f_LF=%d f_HF=%d\n",f_VLF,f_LF,f_HF);
-   //printf("LF=%f HF=%f\n",LF,HF);
+   printf("LF=%f HF=%f\n",LF,HF);
      //printf("LF/HF=%f\n",LF/HF);
 
    ration=LF/HF;
-//ADD******************************************************************************
-      ratio_reg[xxx]=LF/HF;
-
-      int    D_grade_ratio,grade_ratio,level;
-      double diff,compute;
-      int    COMAVG = 2;
-      int    value  = 1;
-      int    led_count,second,n,count_2 ;
-
-      if(xxx > 4)
-      {
-      if(COMAVG<= ratio_reg[xxx])
-                   grade_ratio = 6;
-      else if( COMAVG*0.8  <= ratio_reg[xxx])
-                   grade_ratio = 5;
-      else if( COMAVG*0.65 <= ratio_reg[xxx])
-                   grade_ratio = 4;
-      else if( COMAVG*0.5  <= ratio_reg[xxx])
-                   grade_ratio = 3;
-      else if( COMAVG*0.35 <= ratio_reg[xxx])
-                   grade_ratio = 2;
-      else
-                   grade_ratio = 1;
-      }
-      else
-                   grade_ratio = 6;
-
-
-      if(xxx > 4)
-      {
-       //diff = ratio_reg[xxx-1] - ratio_reg[xxx];
-
-          count_2 = xxx-5;
-          n=5;
-          compute=0;
-
-          for (i=0;i<n;i++){
-
-                            compute = compute+ratio_reg[count_2];
-                            count_2 = count_2 + 1;
-
-                           }
-          compute = compute/n;
-
-          diff = compute - ratio_reg[xxx];
-
-
-       if(value<= diff)
-                    D_grade_ratio = 1;
-       else if(0.5*value<= diff)
-                    D_grade_ratio = 2;
-       else if(0<= diff)
-                    D_grade_ratio = 3;
-       else if(-0.5*value<= diff)
-                    D_grade_ratio = 4;
-       else
-                    D_grade_ratio = 5;
-       }
-       else
-                    D_grade_ratio = 3;
-
-
-      switch (grade_ratio)
-      {
-           case 6:
-               level=1;
-               break;
-
-           case 5:
-               if      (D_grade_ratio==1)  level=3;
-               else if (D_grade_ratio==2)  level=2;
-               else if (D_grade_ratio==3)  level=1;
-               else if (D_grade_ratio==4)  level=1;
-               else                        level=1;
-               break;
-
-           case 4:
-               if      (D_grade_ratio==1)  level=3;
-               else if (D_grade_ratio==2)  level=3;
-               else if (D_grade_ratio==3)  level=2;
-               else if (D_grade_ratio==4)  level=2;
-               else                        level=1;
-               break;
-
-           case 3:
-               if      (D_grade_ratio==1)  level=3;
-               else if (D_grade_ratio==2)  level=3;
-               else if (D_grade_ratio==3)  level=3;
-               else if (D_grade_ratio==4)  level=2;
-               else                        level=2;
-                break;
-
-           case 2:
-               if      (D_grade_ratio==1)  level=3;
-               else if (D_grade_ratio==2)  level=3;
-               else if (D_grade_ratio==3)  level=3;
-               else if (D_grade_ratio==4)  level=3;
-               else                        level=2;
-               break;
-
-           case 1:
-               if      (D_grade_ratio==1)  level=3;
-               else if (D_grade_ratio==2)  level=3;
-               else if (D_grade_ratio==3)  level=3;
-               else if (D_grade_ratio==4)  level=3;
-               else                        level=3;
-               break;
-      }
-
-      level_reg[xxx]=level;
-      second=60+4*(xxx);
-
-      printf("second=%d LF/HF=%f compute=%f diff=%f level=%d\n",second,LF/HF,compute,diff,level);
-
-      if (xxx == led_uptime+19)
-      {
-               led_count = led_uptime;
-               GG=0;
-               BB=0;
-               RR=0;
-               for (i=5;i<20;i++){
-                   switch (level_reg[led_count+i]){
-                   case 1:   GG=GG+1;   break;
-                   case 2:   BB=BB+1;   break;
-                   case 3:   RR=RR+1;   break;
-                   }
-               }
-
-               led_uptime=led_uptime+10;
-               //printf("led_uptime = %d\n",led_uptime);
-
-               if      (GG>=8)     top=0;
-               else if (RR>=10)    top=2;
-               else                top=1;
-               //printf("top = %d led_uptime = %d\n" ,top,led_uptime);
-               printf("top = %d\n" ,top);
-      }
-      else
-               top=top;
-
-
-
-
-
-
-//ADD******************************************************************************
 
 
 }

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'widget.h'
 **
-** Created: Tue Dec 22 16:28:55 2015
+** Created: Thu Jan 1 00:37:16 1970
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -31,16 +31,16 @@ static const uint qt_meta_data_Widget[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-       8,    7,    7,    7, 0x08,
-      33,    7,    7,    7, 0x08,
-      45,    7,    7,    7, 0x0a,
-      59,    7,    7,    7, 0x0a,
+       7,   32,   32,   32, 0x08,
+      33,   32,   32,   32, 0x08,
+      45,   32,   32,   32, 0x0a,
+      59,   32,   32,   32, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Widget[] = {
-    "Widget\0\0paintEvent(QPaintEvent*)\0"
+    "Widget\0paintEvent(QPaintEvent*)\0\0"
     "cal_start()\0plotAdCurve()\0plotPSDCurve()\0"
 };
 

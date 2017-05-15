@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Sun Dec 6 15:25:11 2015
+** Created: Fri Dec 26 15:22:00 2014
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -86,7 +86,7 @@ public:
         ration_LCD->setGeometry(QRect(530, 500, 71, 31));
         psdPlot = new QwtPlot(Widget);
         psdPlot->setObjectName(QString::fromUtf8("psdPlot"));
-        psdPlot->setGeometry(QRect(650, 270, 461, 191));
+        psdPlot->setGeometry(QRect(640, 270, 471, 221));
         pushButton_1 = new QPushButton(Widget);
         pushButton_1->setObjectName(QString::fromUtf8("pushButton_1"));
         pushButton_1->setGeometry(QRect(760, 500, 81, 41));

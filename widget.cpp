@@ -29,7 +29,7 @@
 #include <qtextstream.h>
 #include "cal.cpp"
 //#include "resampleA.cpp"
-//#include "mainqtreal.cpp"
+//#include "R_peak.cpp"
 
 
 #define TOTALFRAMES 151
@@ -47,13 +47,8 @@ char state = 0;
 long framecnt=0;
 char yuvfilename[11] = {'r','c','q','0','0','0','.','y','u','v','\0'};
 
-unsigned char y_color[480][640];
-unsigned char cb_img[240][320];
-unsigned char cr_img[240][320];
+//void resample(double* x_in, double* y_in,double* y_out,int fs,int inpoint,int resamplepoint);
 
-int face_updata=0;
-int drowsydetect(unsigned char y_color[0],unsigned char cb_img[0],unsigned char cr_img[0],int* ,int* ,int* ,int* );
-int w_max,w_min,h_max,h_min;
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -81,8 +76,8 @@ Widget::Widget(QWidget *parent) :
     p_adplot->setPen(QPen(Qt::green,1,Qt::SolidLine));
     p_adplot->attach(ui->qwtPlot);
     //time = 0.0;
-    adPlotTimer = new QTimer();
-    adPlotTimer->start();//1000
+    //adPlotTimer = new QTimer();
+    //adPlotTimer->start();//1000
     //connect(adPlotTimer, SIGNAL(timeout()),this, SLOT(plotAdCurve()));
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->setPen(QPen(Qt::gray, 0.0, Qt::DotLine));
@@ -95,16 +90,16 @@ Widget::Widget(QWidget *parent) :
 //*********************psd*************************
 
     ui->psdPlot->setCanvasBackground( QColor(0,0,0));
-    ui->psdPlot->setAxisScale(QwtPlot::xBottom,0,500);
+    ui->psdPlot->setAxisScale(QwtPlot::xBottom,0,0.5);
     ui->psdPlot->setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
-    ui->psdPlot->setAxisScale(QwtPlot::yLeft,0,6);
+    ui->psdPlot->setAxisScale(QwtPlot::yLeft,0,0.15);
     ui->psdPlot->setAxisMaxMinor(QwtPlot::yLeft,0.2);
     p_psdplot = new QwtPlotCurve();
     p_psdplot->setPen(QPen(Qt::green,1,Qt::SolidLine));
     p_psdplot->attach(ui->psdPlot);
     //time = 0.0;
-    psdPlotTimer = new QTimer();
-    psdPlotTimer->start();//1000
+    //psdPlotTimer = new QTimer();
+    //psdPlotTimer->start();//1000
     //connect(psdPlotTimer, SIGNAL(timeout()),this, SLOT(plotPSDCurve()));
 
     QwtPlotGrid *grid2 = new QwtPlotGrid();
@@ -139,61 +134,16 @@ void Widget::paintEvent(QPaintEvent *)
 {
     int i;
     double t30 [cal_time*framerate],tRRI[fs*cal_time],sumRRI,meanRRI;
-
-    //int ONE_SIZE= X_SIZE* Y_SIZE;//640*480 sequence
+    int ONE_SIZE= X_SIZE* Y_SIZE;//640*480 sequence
 
     //fread(yuv_buffer_pointer, sizeof(unsigned char), ONE_SIZE*3, video_ptr);
     rs = vd->get_frame(&yuv_buffer_pointer,len);
-
-    if(enable==1){
-/*
-        if(face_updata==1){
-            face_updata=0;
-*/
-            ///////////////422-420
-            for(int y=0;y<480;y++)
-                for(int x=0;x<640;x++)
-                    y_color[y][x]=yuv_buffer_pointer[2*(x+y*640)];
-            for(int y=0;y<240;y++,y++)
-                for(int x=0;x<320;x++,x++)
-                    {
-                        cb_img[y][x]=yuv_buffer_pointer[(x+y*640)*4+1];
-                        cr_img[y][x]=yuv_buffer_pointer[(x+y*640)*4+3];
-                    }
-            ////////////////////face detect
-            drowsydetect(&y_color[0][0],&cb_img[0][0],&cr_img[0][0],&h_max,&h_min,&w_max,&w_min);
-
-            //printf("h_1=%d h_2=%d w_1=%d w_2=%d\n",h_max,h_max,w_max,w_max);
-
-            //////////////420-422
-            for(int y=0;y<480;y++)
-                for(int x=0;x<640;x++)
-                    yuv_buffer_pointer[2*(x+y*640)]=y_color[y][x];
-            for(int y=0;y<240;y++,y++)
-                for(int x=0;x<320;x++,x++)
-                {
-                    yuv_buffer_pointer[(x+y*640)*4+1]=cb_img[y][x];
-                    yuv_buffer_pointer[(x+y*640)*4+640*2+1]=cb_img[y][x];
-                    yuv_buffer_pointer[(x+y*640)*4+3]=cr_img[y][x];
-                    yuv_buffer_pointer[(x+y*640)*4+640*2+3]=cr_img[y][x];
-                }
-
-/*
-        }
-
-        else{
-            face_updata=face_updata+1;
-        }
-*/
-
-    }
-
 
 
     convert_yuv_to_rgb_buffer();
 
     if(enable==1){
-            rgb_average(h_min,h_max,w_min,w_max);
+            rgb_average();
             plotAdCurve();
 
             if(f_time>=cal_time){
@@ -209,7 +159,7 @@ void Widget::paintEvent(QPaintEvent *)
                         }
 
 
-                        resample(t30, wave30,wave256,0.0039,30*60,256*60);  //1/256 = 0.0039 - mingfan
+                        resample(t30, wave30,wave256,0.0039,30*60,256*60);
                         R_peak(wave256,RRI_a,rR_peak);
 
                         memset(tRRI, 0, fs*cal_time*sizeof(double));
@@ -228,19 +178,11 @@ void Widget::paintEvent(QPaintEvent *)
                             RRI_b[i]= RRI_b[i]-meanRRI;
                             //printf("%d %.4f %.4f \n",i,t30[i],wave30[i]);
                         }
-                        hannig(RRI_b,RRI_c,time_RRI_a);	//formula
+                        hannig(RRI_b,RRI_c,time_RRI_a);
 
-                        PSD (RRI_c,128,60,freq,power);   //formula
-//ADD****************************************************************************** //nick
-                        uptime_data[xxx]=xxx;
-                        xxx=xxx+1;
-                        if(xxx>1999)
-                        {  xxx=0;
-                           led_uptime=0;
-                        }
-//ADD****************************************************************************** //nick
+                        PSD (RRI_c,128,60,freq,power);
+
                         plotPSDCurve();
-
 
                        // printf("time=%4f \n",rR_peak[len_RRI_a-3]);
 
@@ -255,7 +197,7 @@ void Widget::paintEvent(QPaintEvent *)
     }
 
 
-    //Box();
+    Box();
 
     frame->loadFromData(rgb_buffer,640 * 480 * 3);
     ui->label->setPixmap(QPixmap::fromImage(*frame,Qt::AutoColor));
@@ -363,15 +305,14 @@ void Widget::plotAdCurve(){
 
 }
 
-void Widget::readPSDData(QVector< double > &uptimeData,  QVector<double> &ratioData){
+void Widget::readPSDData(QVector< double > &freqData,  QVector<double> &powerData){
     int i;
-    uptimeData.clear();
-    ratioData.clear();
+    freqData.clear();
+    powerData.clear();
 
-    for(i=0;i<xxx;i++){
-        uptimeData.append(uptime_data[i]);
-        ratioData.append(ratio_reg[i]);
-
+    for(i=0;i<120;i++){
+        freqData.append(freq[i]);
+        powerData.append(power[i]);
     }
 }
 
@@ -379,8 +320,8 @@ void Widget::plotPSDCurve(){
 
 
 
-    readPSDData(uptimeData,ratioData);
-    p_psdplot->setSamples(uptimeData,ratioData);
+    readPSDData(freqData,powerData);
+    p_psdplot->setSamples(freqData,powerData);
 
     p_psdplot->attach(ui->psdPlot);
     ui->psdPlot->replot();

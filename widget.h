@@ -28,15 +28,16 @@ public:
    double FIR_buffer[30*4];
    double smooth_buffer[30*4];
    double R_buffer[30*4];
+
    double fir_out[30];
    QVector< double > xData;
    QVector< double > yData;
-   QVector< double > uptimeData;
-   QVector< double > ratioData;
+   QVector< double > freqData;
+   QVector< double > powerData;
 
    void readAdData(QVector<double> &xData,  QVector<double> &yData);
-   void readPSDData(QVector<double> &uptimeData,  QVector<double> &ratioData);
-   void rgb_average(int h_s,int h_e,int w_s,int w_e);
+   void readPSDData(QVector<double> &freqData,  QVector<double> &powerData);
+   void rgb_average();
    void smooth(double*,double*);
    void wave_show(double*);
    void FIR(double*,double*);
@@ -54,14 +55,6 @@ public:
    double RRI_a[150],RRI_b[fs*cal_time],rR_peak[150],RRI_c[fs*cal_time],freq[128],power[128];
    double RRI_mean,ration;
    int f_time,updata,HR,len_RRI_a,enable;
-//ADD******************************************************************************
-   int xxx ;
-   int top,led_uptime,GG,BB,RR;
-   double  ratio_reg[2000];
-   double  uptime_data[2000];
-   int     level_reg[2000];
-
-//ADD******************************************************************************
 
 
 

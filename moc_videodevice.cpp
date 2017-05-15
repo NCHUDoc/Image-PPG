@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'videodevice.h'
 **
-** Created: Thu Jan 22 21:15:28 2015
+** Created: Thu Jan 1 00:37:35 1970
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!

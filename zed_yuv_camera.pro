@@ -17,14 +17,12 @@ SOURCES += main.cpp\
     fir64.cpp \
     R_peak.cpp \
     resample.cpp \
-    PSD.cpp \
-    mainqtreal.cpp
+    PSD.cpp
 
 HEADERS  += widget.h \
     videodevice.h \
     common.h \
-    common.h \
-    nod.h
+    common.h
 
 
 FORMS    += widget.ui \
